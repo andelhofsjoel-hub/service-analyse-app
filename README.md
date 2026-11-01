@@ -11,7 +11,18 @@ verkoop aan andere servicebedrijven: elk bedrijf heeft zijn eigen, afgeschermde 
 - **Onderdeel opzoeken:** op code of omschrijving, met prijs, voorraad, reserveringen en vervangend nummer.
 - **Inlezen:** voorraadlijst (blad `stock-prices`), aanvraaglijsten van Tunturi, en de technische map.
 
-Nog niet: inloggen, de database (Supabase), bestanden openen, analyse op basis van historiek, planning.
+Nog niet: inloggen, bestanden openen, analyse op basis van historiek, planning.
+
+## Supabase (database) instellen
+
+1. Voer `supabase/migrations/0001_init.sql` één keer uit in Supabase (SQL Editor, New query, plakken, Run).
+2. Kopieer `.env.example` naar `.env.local` en vul de sleutels in. **`.env.local` deel je met niemand** en komt niet in GitHub.
+3. Daarna schrijft `npm run importeer` naar Supabase in plaats van naar de map `data/`, en leest de app uit Supabase.
+
+Zonder `.env.local` werkt alles lokaal met de map `data/`.
+
+Let op: zolang er nog geen login is, gebruikt de app de geheime sleutel aan de serverkant. Dat is enkel veilig
+op je eigen pc. Zet de app pas online als de login er is.
 
 ## Hoe het project in elkaar zit
 
@@ -21,7 +32,9 @@ Nog niet: inloggen, de database (Supabase), bestanden openen, analyse op basis v
 | `src/app/layout.tsx` | De rand rond elke pagina (kop, breedte) |
 | `src/lib/documenten.ts` | Leest artikelcode en serienummerbereik uit bestandsnamen en kiest de juiste versie |
 | `src/lib/excel.ts` | Leest de Excel-bestanden (voorraad en aanvragen) |
-| `src/lib/data.ts` | Haalt de gegevens op; nu uit `data/`, later uit Supabase |
+| `src/lib/data.ts` | Haalt de gegevens op: uit Supabase als dat ingesteld is, anders uit `data/` |
+| `src/lib/supabase.ts` | Verbinding met Supabase |
+| `src/lib/supabase-import.ts` | Schrijft ingelezen gegevens naar Supabase (zonder dubbels) |
 | `scripts/importeer.ts` | Opdracht om bestanden in te lezen |
 | `supabase/migrations/0001_init.sql` | Het databaseschema (alle tabellen) voor later |
 | `data/` | Ingelezen gegevens. **Staat niet in GitHub** (klantgegevens en prijzen) |

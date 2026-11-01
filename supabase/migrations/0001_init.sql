@@ -101,6 +101,7 @@ create table voorraad (
   op_stock int not null default 0 check (op_stock >= 0),
   gereserveerd int not null default 0 check (gereserveerd >= 0),
   minimum int not null default 0,
+  gereserveerd_voor text[] not null default '{}', -- overgenomen uit Excel (kolommen S-V), tot opdrachten in de app lopen
   unique (onderdeel_id, locatie)
 );
 
@@ -111,7 +112,8 @@ create table klant (
   extern_nummer text, -- accountnummer bij de opdrachtgever
   naam text not null,
   straat text, postcode text, plaats text, land text,
-  email text, telefoon text
+  email text, telefoon text,
+  unique (bedrijf_id, extern_nummer)
 );
 
 create table toestel (
@@ -120,7 +122,8 @@ create table toestel (
   toesteltype_id uuid references toesteltype (id),
   serienummer text,
   aankoopdatum date,
-  klant_id uuid references klant (id)
+  klant_id uuid references klant (id),
+  unique (bedrijf_id, serienummer)
 );
 
 create table aanvraag (
@@ -131,6 +134,7 @@ create table aanvraag (
   status_opdrachtgever text, -- bv. Voorbehandeld
   toestel_id uuid references toestel (id),
   artikelcode text,
+  artikel_omschrijving text,
   serienummer text,
   klacht text,
   memo text,
