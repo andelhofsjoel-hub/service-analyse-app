@@ -36,8 +36,8 @@ async function Inhoud({ searchParams }: Pick<PageProps<"/">, "searchParams">) {
   const serienummer = eerste(params.serienummer).toUpperCase();
   const onderdeel = eerste(params.onderdeel);
 
-  const documenten = artikel ? zoekDocumenten(await haalDocumenten(), artikel, serienummer || null) : [];
-  const aanvragen = artikel ? (await haalAanvragen()).filter((a) => a.artikelcode === artikel) : [];
+  const documenten = artikel ? zoekDocumenten(await haalDocumenten(artikel), artikel, serienummer || null) : [];
+  const aanvragen = artikel ? await haalAanvragen(artikel) : [];
   const onderdelen = onderdeel ? await zoekOnderdelen(onderdeel) : [];
 
   return (

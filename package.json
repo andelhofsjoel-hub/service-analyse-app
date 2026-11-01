@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "importeer": "tsx scripts/importeer.ts",
+    "importeer": "tsx --env-file-if-exists=.env.local scripts/importeer.ts",
     "test": "vitest run"
   },
   "dependencies": {
