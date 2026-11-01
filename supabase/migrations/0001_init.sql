@@ -186,7 +186,7 @@ create table bestellijn (
 );
 
 -- ---------- Analyse ----------
-create table analyse (
+create table aanvraag_analyse ( -- "analyse" is een gereserveerd woord in PostgreSQL
   id uuid primary key default gen_random_uuid(),
   bedrijf_id uuid not null references bedrijf (id),
   aanvraag_id uuid not null references aanvraag (id) on delete cascade,
@@ -202,7 +202,7 @@ declare t text;
 begin
   foreach t in array array['bronkoppeling','opdrachtgever','toesteltype','document','onderdeel',
     'onderdeel_in_document','voorraad','klant','toestel','aanvraag','serviceopdracht',
-    'gebruikt_onderdeel','bestellijn','analyse']
+    'gebruikt_onderdeel','bestellijn','aanvraag_analyse']
   loop
     execute format('alter table %I enable row level security', t);
     execute format('create policy eigen_bedrijf on %I for all using (bedrijf_id = mijn_bedrijf_id()) with check (bedrijf_id = mijn_bedrijf_id())', t);
