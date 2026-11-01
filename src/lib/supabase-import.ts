@@ -14,9 +14,33 @@ function controleer<T>(res: { data: T; error: unknown }): T {
   return res.data;
 }
 
+/**
+ * Dubbele codes in Excel (bv. ".WM367#15" staat 2x): de laatste rij wint, maar lege velden
+ * (zoals een ontbrekende prijs) worden aangevuld met de waarde uit de eerdere rij.
+ */
+export function voegDubbelsSamen(onderdelen: OnderdeelRij[]): OnderdeelRij[] {
+  const perCode = new Map<string, OnderdeelRij>();
+  for (const o of onderdelen) {
+    const vorig = perCode.get(o.code);
+    perCode.set(
+      o.code,
+      vorig
+        ? {
+            ...o,
+            omschrijving: o.omschrijving ?? vorig.omschrijving,
+            prijs: o.prijs ?? vorig.prijs,
+            merk: o.merk ?? vorig.merk,
+            vervangenDoor: o.vervangenDoor ?? vorig.vervangenDoor,
+            nietMeerLeverbaar: o.nietMeerLeverbaar || vorig.nietMeerLeverbaar,
+          }
+        : o,
+    );
+  }
+  return [...perCode.values()];
+}
+
 export async function importeerOnderdelen(db: SupabaseClient, bedrijfId: string, onderdelen: OnderdeelRij[]) {
-  // Dubbele codes in Excel: de laatste rij wint.
-  const uniek = [...new Map(onderdelen.map((o) => [o.code, o])).values()];
+  const uniek = voegDubbelsSamen(onderdelen);
 
   const ids = new Map<string, string>();
   await inPakketten(uniek, async (pakket) => {
